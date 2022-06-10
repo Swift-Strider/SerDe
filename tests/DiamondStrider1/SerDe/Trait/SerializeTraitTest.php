@@ -12,7 +12,7 @@ final class SerializeTraitTest extends TestCase
 {
 	public function testSerialize(): void
 	{
-		$data = (new UserSerialize(
+		$data = (new UserSerDe(
 			'user', 5, 2.3, true, ['hi'], [1, 'a' => 2, 3]
 		))->serialize();
 		assertEquals([
@@ -22,6 +22,7 @@ final class SerializeTraitTest extends TestCase
 			'on-vacation' => true,
 			'cartItems' => ['hi'],
 			'unstructuredArray' => [1, 'a' => 2, 3],
+			'bag' => null,
 		], $data, 'expect serialize to work');
 	}
 }

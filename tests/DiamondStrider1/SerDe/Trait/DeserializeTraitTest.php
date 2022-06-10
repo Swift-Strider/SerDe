@@ -20,10 +20,11 @@ final class DeserializeTraitTest extends TestCase
 			'on-vacation' => true,
 			'cartItems' => ['hi'],
 			'unstructuredArray' => [1, 'a' => 2, 3],
+			null
 		];
-		$user = UserDeserialize::deserialize($data);
-		$expected = new UserDeserialize(
-			'user', 5, 2.3, true, ['hi'], [1, 'a' => 2, 3]
+		$user = UserSerDe::deserialize($data);
+		$expected = new UserSerDe(
+			'user', 5, 2.3, true, ['hi'], [1, 'a' => 2, 3], null
 		);
 		assertEquals($user, $expected, 'expect deserialize to work');
 	}
@@ -39,11 +40,11 @@ final class DeserializeTraitTest extends TestCase
 				'cartItems' => ['hi', 5],
 				'unstructuredArray' => [1, 'a' => 2, 3],
 			];
-			UserDeserialize::deserialize($data);
+			UserSerDe::deserialize($data);
 			$this->assertTrue(false, 'DiamondStrider1\SerDe\Parse\ParseErrorsEncounteredException must be thrown.');
 		} catch (ParseErrorsEncounteredException $e) {
 			$errors = $e->getParseErrors();
-			assertEquals("Expected \"name\" to be string, but null was given.\nExpected \"coins\" to be int, but float was given.\nExpected \"money\" to be float, but int was given.\nExpected \"cartItems.1\" to be string, but int was given.\n", $errors->toString(), 'expected error message to match expected');
+			assertEquals("Expected \"name\" to be string, but nothing was given.\nExpected \"coins\" to be int, but float was given.\nExpected \"money\" to be float, but int was given.\nExpected \"cartItems.1\" to be string, but int was given.\n", $errors->toString(), 'expected error message to match expected');
 		}
 	}
 }

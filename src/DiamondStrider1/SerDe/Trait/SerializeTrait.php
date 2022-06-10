@@ -17,6 +17,10 @@ trait SerializeTrait
 		foreach ($class->getFields() as $field) {
 			$value = $field->getProperty()->setAccessible(true);
 			$value = $field->getProperty()->getValue($this);
+			if (null === $value) {
+				$data[$field->getName()] = null;
+				continue;
+			}
 			$transformer = $field->getTransformer();
 			if (null !== $transformer) {
 				$transformed = $transformer->serialize($value);

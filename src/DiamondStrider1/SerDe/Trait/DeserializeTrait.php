@@ -26,6 +26,12 @@ trait DeserializeTrait
 		$self = (new ReflectionClass(self::class))->newInstanceWithoutConstructor();
 		foreach ($class->getFields() as $field) {
 			$value = $data->getRawValue($field->getName());
+			$allowsNull = $field->getType()->allowsNull();
+			if (null === $value && $allowsNull) {
+				$field->getProperty()->setAccessible(true);
+				$field->getProperty()->setValue($self, null);
+				continue;
+			}
 			$transformer = $field->getTransformer();
 			if (null !== $transformer) {
 				$transformed = $transformer->deserialize(
@@ -51,14 +57,18 @@ trait DeserializeTrait
 				}
 			} elseif ($field->isPrimitive()) {
 				$typeName = $field->getType()->getName();
-				$allowsNull = $field->getType()->allowsNull();
 				$valid = Type::check($typeName, $value);
-				if ($valid || (null === $value && $allowsNull)) {
+				if ($valid) {
 					$field->getProperty()->setAccessible(true);
 					$field->getProperty()->setValue($self, $value);
+				} elseif (null === $value) {
+					$data->getErrors()->reportError(new MissingPropertyError(
+						key: $data->getQualifiedKeyName($field->getName()),
+						expectedType: $typeName.($allowsNull ? ' or null' : ''),
+					));
 				} else {
 					$data->getErrors()->reportError(new MismatchTypeError(
-						key: $field->getName(),
+						key: $data->getQualifiedKeyName($field->getName()),
 						expectedType: $typeName.($allowsNull ? ' or null' : ''),
 						gotType: Type::getName($value),
 					));
