@@ -1,0 +1,42 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "diamondstrider1/serde",
+    "description": "Serialization and Deserialization for PHP",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "DiamondStrider1",
+            "email": "62265561+Swift-Strider@users.noreply.github.com"
+        }
+    ],
+    "scripts": {
+        "post-install-cmd": "@php tools/lazily-setup.php",
+        "lint": "vendor/bin/phpstan analyze -c config/phpstan.neon",
+        "fmt": "vendor/bin/php-cs-fixer fix --config=config/.php-cs-fixer.php",
+        "cs": "vendor/bin/php-cs-fixer fix --config=config/.php-cs-fixer.php --dry-run --diff",
+        "test": "vendor/bin/phpunit tests --bootstrap vendor/autoload.php"
+    },
+	"autoload": {
+		"psr-0": {
+			"DiamondStrider1\\SerDe\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"DiamondStrider1\\SerDe\\tests\\": "tests/DiamondStrider1/SerDe/"
+		}
+	},
+    "require-dev": {
+        "phpstan/phpstan": "^1.7",
+        "phpstan/phpstan-strict-rules": "^1.2",
+        "phpstan/extension-installer": "^1.1",
+        "friendsofphp/php-cs-fixer": "^3.8",
+        "phpunit/phpunit": "^9.5"
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    }
+}
