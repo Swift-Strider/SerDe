@@ -1,6 +1,7 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
     "name": "diamondstrider1/serde",
+    "version": "0.0.1",
     "description": "Serialization and Deserialization for PHP",
     "type": "library",
     "license": "MIT",
